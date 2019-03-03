@@ -9,6 +9,8 @@
 #else
 #include<sys/types.h>
 #include<sys/socket.h>
+#include<unistd.h>
+#define closesocket close
 #endif
 
 int main(int argc,char* argv[])
@@ -17,7 +19,7 @@ int main(int argc,char* argv[])
 	WSADATA ws;
 	WSAStartup(MAKEWORD(2, 2), &ws);
 #endif
-	for (int i = 0; i < 1000; i++) {
+	for (int i = 0; i < 2000; i++) {
 
 
 		int sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -25,7 +27,7 @@ int main(int argc,char* argv[])
 			printf("create socket failed\n");
 		}
 		printf("%d ", sock);
-		closesocket(sock);
+		//closesocket(sock);
 	}
 	getchar();
     std::cout << "Hello World!\n"; 
