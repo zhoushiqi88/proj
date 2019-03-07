@@ -41,6 +41,7 @@ int main(int argc,char* argv[])
 		return -2;
 	}
 	printf("bind port %d success\n", port);
+	listen(sock, 10);
 	closesocket(sock);
 }
 
