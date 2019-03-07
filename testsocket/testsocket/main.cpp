@@ -45,9 +45,16 @@ int main(int argc,char* argv[])
 	listen(sock, 10);
 
 	sockaddr_in caddr;
-	socklen_t len = 0;
-	int client = accept(sock,(sockaddr*)&caddr,len);
+	socklen_t len = sizeof(caddr);
+	int client = accept(sock,(sockaddr*)&caddr,&len);
 	printf("accept client %d\n", client);
+	char* ip= inet_ntoa(caddr.sin_addr);
+	unsigned short cport = ntohs(caddr.sin_port);
+	printf("client ip %s\nclient port is %d\n",ip,cport);
+	char buf[1024] = {0};
+	int relen = recv(client,buf,sizeof(buf)-1,0);
+	printf("recv %s\n",buf);
+	closesocket(client);
 	//closesocket(sock);
 }
 
