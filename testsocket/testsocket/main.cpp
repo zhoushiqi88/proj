@@ -15,6 +15,7 @@
 #define closesocket close
 #endif
 
+
 int main(int argc,char* argv[])
 {
 #ifdef WIN32
@@ -42,7 +43,12 @@ int main(int argc,char* argv[])
 	}
 	printf("bind port %d success\n", port);
 	listen(sock, 10);
-	closesocket(sock);
+
+	sockaddr_in caddr;
+	socklen_t len = 0;
+	int client = accept(sock,(sockaddr*)&caddr,len);
+	printf("accept client %d\n", client);
+	//closesocket(sock);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
