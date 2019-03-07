@@ -19,18 +19,27 @@ int main(int argc,char* argv[])
 	WSADATA ws;
 	WSAStartup(MAKEWORD(2, 2), &ws);
 #endif
-	for (int i = 0; i < 2000; i++) {
-
-
-		int sock = socket(AF_INET, SOCK_STREAM, 0);
-		if (sock == -1) {
-			printf("create socket failed\n");
-		}
-		printf("%d ", sock);
-		//closesocket(sock);
+	int sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == -1) {
+		printf("create socket failed\n");
+		return -1;
 	}
-	getchar();
-    std::cout << "Hello World!\n"; 
+	unsigned short port = 8080;
+	if (argc > 1) {
+		port = atoi(argv[1]);
+	}
+	sockaddr_in saddr;
+	saddr.sin_family = AF_INET;
+	saddr.sin_port = htons(port);
+	saddr.sin_addr.s_addr = htonl(0);
+
+
+	if (bind(sock, (sockaddr*)&saddr, sizeof(saddr)) != 0) {
+		printf("bind port %d failed!\n", port);
+		return -2;
+	}
+	printf("bind port %d success", port);
+	closesocket(sock);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
