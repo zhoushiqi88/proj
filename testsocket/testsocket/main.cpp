@@ -10,6 +10,8 @@
 #include<sys/types.h>
 #include<sys/socket.h>
 #include<unistd.h>
+#include<stdlib.h>
+#include<arpa/inet.h>
 #define closesocket close
 #endif
 
@@ -38,7 +40,7 @@ int main(int argc,char* argv[])
 		printf("bind port %d failed!\n", port);
 		return -2;
 	}
-	printf("bind port %d success", port);
+	printf("bind port %d success\n", port);
 	closesocket(sock);
 }
 
