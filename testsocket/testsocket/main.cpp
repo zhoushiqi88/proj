@@ -5,6 +5,7 @@
 #include"XTcp.h"
 #include<stdlib.h>
 #include<thread>
+#include<string.h>
 
 class TcpThread{
 public:
