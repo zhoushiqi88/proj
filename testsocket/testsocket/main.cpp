@@ -12,8 +12,36 @@
 #include<unistd.h>
 #include<stdlib.h>
 #include<arpa/inet.h>
+#include<string.h>
 #define closesocket close
 #endif
+
+#include<thread>
+using namespace std;
+
+class TcpThread{
+public:
+	void Main()
+	{
+		char buf[1024] = {0};
+		for(;;) {
+			int relen = recv(client,buf,sizeof(buf)-1,0);
+			if(relen <= 0) {
+				break;
+			}
+			if(strstr(buf,"quit") != NULL) {
+				printf("quit success\n");
+				break;
+			}
+			buf[relen] = '\0';
+			send(client,"ok\n",3,0);
+			printf("recv %s\n",buf);
+		}
+		closesocket(client);
+		delete this;
+	}
+	int client = 0;
+};	
 
 
 int main(int argc,char* argv[])
@@ -44,18 +72,21 @@ int main(int argc,char* argv[])
 	printf("bind port %d success\n", port);
 	listen(sock, 10);
 
-	sockaddr_in caddr;
-	socklen_t len = sizeof(caddr);
-	int client = accept(sock,(sockaddr*)&caddr,&len);
-	printf("accept client %d\n", client);
-	char* ip= inet_ntoa(caddr.sin_addr);
-	unsigned short cport = ntohs(caddr.sin_port);
-	printf("client ip %s\nclient port is %d\n",ip,cport);
-	char buf[1024] = {0};
-	int relen = recv(client,buf,sizeof(buf)-1,0);
-	printf("recv %s\n",buf);
-	closesocket(client);
-	//closesocket(sock);
+	for(;;) {
+		sockaddr_in caddr;
+		socklen_t len = sizeof(caddr);
+		int client = accept(sock,(sockaddr*)&caddr,&len);
+		if(client <=0) break;
+		printf("accept client %d\n", client);
+		char* ip= inet_ntoa(caddr.sin_addr);
+		unsigned short cport = ntohs(caddr.sin_port);
+		printf("client ip %s\nclient port is %d\n",ip,cport);
+		TcpThread *th = new TcpThread();
+		th->client = client;
+		thread sth(&TcpThread::Main,th);
+		sth.detach();
+	}
+	closesocket(sock);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
